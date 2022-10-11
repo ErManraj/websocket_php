@@ -63,8 +63,8 @@ class Chat implements MessageComponentInterface {
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         $data = json_decode($msg, true);
-
-        if($data['command'] == 'private')
+		 
+        if( !empty($data['command']) && $data['command'] == 'private')
         {
             //private chat
 
