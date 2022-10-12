@@ -15,6 +15,8 @@ class Chat implements MessageComponentInterface {
     public function __construct() {
         $this->clients = new \SplObjectStorage;
         echo 'Server Started';
+		
+		
     }
 
     public function onOpen(ConnectionInterface $conn) {
@@ -53,6 +55,57 @@ class Chat implements MessageComponentInterface {
                 $client->send(json_encode($data)); //here we are sending a status-message
             }
         }
+		
+		$data['userId'] = '11';
+		$data['msg'] = "test looping";
+		$user_data['user_name'] = 'manraj';
+		
+		//group chat
+
+            $chat_object = new \ChatRooms;
+
+            $chat_object->setUserId($data['userId']);
+
+            $chat_object->setMessage($data['msg']);
+
+            $chat_object->setCreatedOn(date("Y-m-d h:i:s").'111');
+
+            $chat_object->save_chat();
+
+            $user_object = new \ChatUser;
+
+            $user_object->setUserId($data['userId']);
+
+            $user_data = $user_object->get_user_data_by_id();
+
+            $user_name = $user_data['user_name'];
+
+            $data['dt'] = date("d-m-Y h:i:s");
+
+
+            foreach ($this->clients as $client) {
+                /*if ($from !== $client) {
+                    // The sender is not the receiver, send to each client connected
+                    $client->send($msg);
+                }*/
+
+                if($from == $client)
+                {
+                    $data['from'] = 'Me';
+                }
+                else
+                {
+                    $data['from'] = $user_name.'ddddddd';
+                }
+				
+				for($i=0;$i<=10;$i++){
+					 sleep(1);
+					 $client->send(json_encode($data));
+					 $i++;
+					 }
+
+                //$client->send(json_encode($data));
+            }
 
         echo "New connection! ({$conn->resourceId})\n";
     }
@@ -134,7 +187,7 @@ class Chat implements MessageComponentInterface {
 
             $chat_object->setMessage($data['msg']);
 
-            $chat_object->setCreatedOn(date("Y-m-d h:i:s"));
+            $chat_object->setCreatedOn(date("Y-m-d h:i:s").'111');
 
             $chat_object->save_chat();
 
@@ -161,10 +214,16 @@ class Chat implements MessageComponentInterface {
                 }
                 else
                 {
-                    $data['from'] = $user_name;
+                    $data['from'] = $user_name.'ddddddd';
                 }
+				
+				for($i=0;$i<=10;$i++){
+					//sleep(1);
+					 $client->send(json_encode($data));
+					 $i++;
+					 }
 
-                $client->send(json_encode($data));
+                //$client->send(json_encode($data));
             }
         }
     }
